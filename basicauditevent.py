@@ -39,7 +39,7 @@ class BasicAuditEvent(object):
 
     def __str__(self):
         retval = '%s: %s (%s)' % (self.subsystem, self.instanceDatum,
-                                  self.eventDate)
+                                  self.date)
         return retval
         
     def log(self):
@@ -49,6 +49,6 @@ class BasicAuditEvent(object):
     def xhtml(self):
         retval = u'<span class="audit-event">%s: %s '\
           u'(<span class="date">%s</span>)</span>' % \
-          (self.subsystem, self.instanceDatum, self.eventDate)
+          (self.subsystem, self.instanceDatum, self.date)
         return retval
 

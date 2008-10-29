@@ -1,7 +1,7 @@
 # coding=utf-8
 import sqlalchemy as sa
 import pytz, datetime
-
+from zope.component import createObject
 from interfaces import IAuditEvent
 
 import logging
@@ -52,27 +52,32 @@ class AuditQuery(object):
           supplementary_datum = event.supplementaryDatum,
         )
 
-    def get_user_events_on_site(self, user_id, site_id):
-        aet = self.auditEvsentTable
+    def get_user_events_on_site(self, user_id, site_id, 
+        limit=10, offset=0):
+        aet = self.auditEventTable
         s = aet.select()
-        s.append_whereclause(aet.c.user_id == user_id)
+        s.append_whereclause(aet.c.instance_user_id == user_id)
         s.append_whereclause(aet.c.site_id == site_id)
-        s.order_by(sa.desc('date'))
+        s.limit = limit
+        s.offset = offset
+        s.order_by(sa.desc('event_date'))
+    
         r = s.execute()
-
         retval = []
         if r.rowcount:
           retval = [{
-            'id':                  x['id'],
+            'event_id':            x['id'],
             'date':                x['event_date'],
             'subsystem':           x['subsystem'],
-            'event_code':          x['event_code'],
+            'code':                x['event_code'],
             'user_id':             x['user_id'],
             'instance_user_id':    x['instance_user_id'],
             'site_id':             x['site_id'],
             'group_id':            x['group_id'],
-            'instance_datum':      x['instance_datum'],
-            'supplementary_datum': x['supplementary_datum']} for x in r]
+            'instanceDatum':       x['instance_datum'],
+            'supplementaryDatum':  x['supplementary_datum']} for x in r]
         assert type(retval) == list
         return retval
+
+    
 
