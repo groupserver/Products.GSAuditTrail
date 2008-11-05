@@ -52,12 +52,34 @@ class AuditQuery(object):
           supplementary_datum = event.supplementaryDatum,
         )
 
-    def get_user_events_on_site(self, user_id, site_id, 
-        limit=10, offset=0):
+    def get_instance_user_events(self, user_id, 
+        site_id='', group_id='', limit=10, offset=0):
+        """Get events that occurred to a particular user
+        
+        ARGUMENTS
+            user_id:    The ID of the instance-user (required).
+            site_id:    The ID of the site. Defaults to all ('').
+            group_id:   The ID of the group. Defaults to all ('').
+            limit:      The number of events to return. Default 10.
+            offset:     The event-number to start searching from.
+                        Defaults to 0 (most recent).
+
+        RETURNS
+            A list of dictionaries. The dictionaries can be fed to
+            a Zope "createObject" call, to create the appropriate
+            event.
+            
+        SIDE EFFECTS
+          None.
+        """
         aet = self.auditEventTable
         s = aet.select()
         s.append_whereclause(aet.c.instance_user_id == user_id)
-        s.append_whereclause(aet.c.site_id == site_id)
+        if site_id:
+            s.append_whereclause(aet.c.site_id == site_id)
+        if group_id:
+            s.append_whereclause(aet.c.group_id == group_id)
+        
         s.limit = limit
         s.offset = offset
         s.order_by(sa.desc('event_date'))
@@ -78,6 +100,4 @@ class AuditQuery(object):
             'supplementaryDatum':  x['supplementary_datum']} for x in r]
         assert type(retval) == list
         return retval
-
-    
 
