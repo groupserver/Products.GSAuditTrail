@@ -1,4 +1,6 @@
 # coding=utf-8
+from datetime import datetime
+from pytz import UTC
 from zope.interface import Interface
 from zope.schema import *
 
@@ -13,9 +15,10 @@ class IAuditEvent(Interface):
       description=u'The ID of the event',
       required=True)
 
-    date = Date(title=u'Date',
+    date = Datetime(title=u'Date',
         description=u'The date and time of the event.',
-        required=True)
+        required=True,
+        default=datetime.now(UTC))
 
     subsystem = TextLine(title=u'Subsystem',
       description=u'The ID of the subsystem that generated the '\
