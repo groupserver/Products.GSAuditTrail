@@ -21,7 +21,7 @@ def event_id_from_data(userInfo, instanceUserInfo, siteInfo, code,
     assert type(eventId) == str
     return eventId
 
-def marshal_data(context, data):
+def marshal_data(context, data, siteInfo=None, groupInfo=None):
     assert context
     assert type(data) == dict
     retval = data
@@ -31,15 +31,19 @@ def marshal_data(context, data):
       createObject('groupserver.UserFromId', context, uId)
 
     retval.pop('site_id')
-    retval['siteInfo'] = \
-      createObject('groupserver.SiteInfo', context)
+    if not siteInfo:
+        siteInfo = \
+          createObject('groupserver.SiteInfo', context)
+    retval['siteInfo'] = siteInfo
 
     uId = retval.pop('user_id')
     retval['userInfo'] = \
       createObject('groupserver.UserFromId', context, uId)
 
     gId = retval.pop('group_id')
-    retval['groupInfo'] = \
-      createObject('groupserver.GroupInfo', context, gId)
+    if not(groupInfo) and gId:
+        groupInfo = \
+          createObject('groupserver.GroupInfo', siteInfo.siteObj, gId)
+    retval['groupInfo'] = groupInfo
     return retval
 
