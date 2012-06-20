@@ -4,18 +4,14 @@ import pytz, datetime
 from zope.component import createObject
 from interfaces import IAuditEvent
 
+from gs.database import getTable, getSession
+
 import logging
 log = logging.getLogger("GSAuditTrail") #@UndefinedVariable
 
 class AuditQuery(object):
-    def __init__(self, da):
-
-        engine = da.engine
-        metadata = sa.BoundMetaData(engine)
-        self.auditEventTable = sa.Table(
-          'audit_event', 
-          metadata, 
-          autoload=True)
+    def __init__(self):
+        self.auditEventTable = getTable('audit_event')
     
     def store(self, event):
         if event.userInfo:
@@ -39,18 +35,19 @@ class AuditQuery(object):
             egiid = ''
 
         i = self.auditEventTable.insert()
-        i.execute(
-          id = event.id,
-          event_date = event.date,
-          subsystem = event.subsystem,
-          event_code = event.code,
-          user_id = euiid,
-          instance_user_id = eiuiid,
-          site_id = esiid,
-          group_id = egiid,
-          instance_datum = event.instanceDatum,
-          supplementary_datum = event.supplementaryDatum,
-        )
+        session = getSession()
+        params = {
+          'id': event.id,
+          'event_date': event.date,
+          'subsystem': event.subsystem,
+          'event_code': event.code,
+          'user_id': euiid,
+          'instance_user_id': eiuiid,
+          'site_id': esiid,
+          'group_id': egiid,
+          'instance_datum': event.instanceDatum,
+          'supplementary_datum': event.supplementaryDatum}
+        session.execute(i, params=params)
 
     def get_instance_user_events(self, user_id, 
         site_id='', group_id='', limit=10, offset=0):
@@ -73,18 +70,16 @@ class AuditQuery(object):
           None.
         """
         aet = self.auditEventTable
-        s = aet.select()
+        s = aet.select(limit=limit, offset=offset,
+                       order_by=sa.desc('event_date'))
         s.append_whereclause(aet.c.instance_user_id == user_id)
         if site_id:
             s.append_whereclause(aet.c.site_id == site_id)
         if group_id:
             s.append_whereclause(aet.c.group_id == group_id)
         
-        s.limit = limit
-        s.offset = offset
-        s.order_by(sa.desc('event_date'))
-    
-        r = s.execute()
+        session = getSession() 
+        r = session.execute(s)
         retval = []
         if r.rowcount:
           retval = [{
