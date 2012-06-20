@@ -25,6 +25,7 @@ setup(name='Products.GSAuditTrail',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'gs.database',
           # -*- Extra requirements: -*-
       ],
       entry_points="""
