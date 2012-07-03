@@ -2,9 +2,9 @@
 import sqlalchemy as sa
 import pytz, datetime
 from zope.component import createObject
-from interfaces import IAuditEvent
-
+from zope.sqlalchemy import mark_changed
 from gs.database import getTable, getSession
+from interfaces import IAuditEvent
 
 import logging
 log = logging.getLogger("GSAuditTrail") #@UndefinedVariable
@@ -48,6 +48,7 @@ class AuditQuery(object):
           'instance_datum': event.instanceDatum,
           'supplementary_datum': event.supplementaryDatum}
         session.execute(i, params=params)
+        mark_changed(session)
 
     def get_instance_user_events(self, user_id, 
         site_id='', group_id='', limit=10, offset=0):
