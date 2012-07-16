@@ -25,7 +25,14 @@ setup(name='Products.GSAuditTrail',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'pytz',
+          'sqlalchemy',
           'gs.database',
+          'Products.XWFCore',
+          'zope.component',
+          'zope.interface',
+          'zope.schema',
+          'zope.sqlalchemy',
           # -*- Extra requirements: -*-
       ],
       entry_points="""
