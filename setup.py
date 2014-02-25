@@ -51,8 +51,8 @@ setup(name='Products.GSAuditTrail',
           'zope.interface',
           'zope.schema',
           'zope.sqlalchemy',
+          'gs.core',
           'gs.database',
-          'Products.XWFCore',
     ],
     entry_points="""
     # -*- Entry points: -*-
