@@ -1,18 +1,27 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
+##############################################################################
+#
+# Copyright © 2013, 2014 OnlineGroups.net and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+from __future__ import absolute_import, unicode_literals
 import sqlalchemy as sa
-import pytz, datetime
-from zope.component import createObject
 from zope.sqlalchemy import mark_changed
 from gs.database import getTable, getSession
-from interfaces import IAuditEvent
 
-import logging
-log = logging.getLogger("GSAuditTrail") #@UndefinedVariable
 
 class AuditQuery(object):
     def __init__(self):
         self.auditEventTable = getTable('audit_event')
-    
+
     def store(self, event):
         if event.userInfo:
             euiid = event.userInfo.id
@@ -47,13 +56,13 @@ class AuditQuery(object):
           'group_id': egiid,
           'instance_datum': event.instanceDatum,
           'supplementary_datum': event.supplementaryDatum}
-        session.execute(i, params=params)
+        session.execute(i, params=params)  # Here
         mark_changed(session)
 
-    def get_instance_user_events(self, user_id, 
+    def get_instance_user_events(self, user_id,
         site_id='', group_id='', limit=10, offset=0):
         """Get events that occurred to a particular user
-        
+
         ARGUMENTS
             user_id:    The ID of the instance-user (required).
             site_id:    The ID of the site. Defaults to all ('').
@@ -66,7 +75,7 @@ class AuditQuery(object):
             A list of dictionaries. The dictionaries can be fed to
             a Zope "createObject" call, to create the appropriate
             event.
-            
+
         SIDE EFFECTS
           None.
         """
@@ -78,22 +87,21 @@ class AuditQuery(object):
             s.append_whereclause(aet.c.site_id == site_id)
         if group_id:
             s.append_whereclause(aet.c.group_id == group_id)
-        
-        session = getSession() 
+
+        session = getSession()
         r = session.execute(s)
         retval = []
         if r.rowcount:
-          retval = [{
-            'event_id':            x['id'],
-            'date':                x['event_date'],
-            'subsystem':           x['subsystem'],
-            'code':                x['event_code'],
-            'user_id':             x['user_id'],
-            'instance_user_id':    x['instance_user_id'],
-            'site_id':             x['site_id'],
-            'group_id':            x['group_id'],
-            'instanceDatum':       x['instance_datum'],
-            'supplementaryDatum':  x['supplementary_datum']} for x in r]
+            retval = [{
+                'event_id': x['id'],
+                'date': x['event_date'],
+                'subsystem': x['subsystem'],
+                'code': x['event_code'],
+                'user_id': x['user_id'],
+                'instance_user_id': x['instance_user_id'],
+                'site_id': x['site_id'],
+                'group_id': x['group_id'],
+                'instanceDatum': x['instance_datum'],
+                'supplementaryDatum': x['supplementary_datum']} for x in r]
         assert type(retval) == list
         return retval
-
