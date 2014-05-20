@@ -57,7 +57,7 @@ class AuditQuery(object):
           'instance_datum': event.instanceDatum,
           'supplementary_datum': event.supplementaryDatum}
         session.execute(i, params=params)  # Here
-        mark_changed(session)
+        mark_changed(session)  # Really?
 
     def get_instance_user_events(self, user_id,
         site_id='', group_id='', limit=10, offset=0):
