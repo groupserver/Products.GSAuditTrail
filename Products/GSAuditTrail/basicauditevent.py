@@ -16,13 +16,12 @@ from __future__ import absolute_import, unicode_literals
 import logging
 log = logging.getLogger('Products.GSAuditTrail')
 from zope.component.interfaces import IFactory
-from zope.interface import implements, implementedBy
+from zope.interface import implementer, implementedBy
 from .interfaces import IAuditEvent
 
 
+@implementer(IFactory)
 class BasicAuditEventFactory(object):
-    implements(IFactory)
-
     title = 'Basic Audit Event Factory'
     description = 'Creates a basic GroupServer audit event'
 
@@ -33,9 +32,8 @@ class BasicAuditEventFactory(object):
         return implementedBy(BasicAuditEvent)
 
 
+@implementer(IAuditEvent)
 class BasicAuditEvent(object):
-    implements(IAuditEvent)
-
     def __init__(self, context, eventId, code='0', date=None, userInfo=None,
                     instanceUserInfo=None, siteInfo=None, groupInfo=None,
                     instanceDatum='', supplementaryDatum='', subsystem=''):
