@@ -49,7 +49,7 @@ setup(name='Products.GSAuditTrail',
         "Intended Audience :: Developers",
         'License :: OSI Approved :: Zope Public License',
         "Natural Language :: English",
-        "Operating System :: POSIX :: Linux"
+        "Operating System :: POSIX :: Linux",
         "Programming Language :: Python",
         "Topic :: Software Development :: Libraries :: Python Modules",
         ],
@@ -62,9 +62,7 @@ setup(name='Products.GSAuditTrail',
     namespace_packages=['Products'],
     include_package_data=True,
     zip_safe=False,
-    install_requires=[
-          'setuptools',
-    ],
+    install_requires=requires,
     entry_points="""
     # -*- Entry points: -*-
     """,
