@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-##############################################################################
+############################################################################
 #
 # Copyright © 2013, 2014 OnlineGroups.net and Contributors.
 # All Rights Reserved.
@@ -11,12 +11,13 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################
+############################################################################
 from __future__ import absolute_import, unicode_literals
 import logging
 log = logging.getLogger('Products.GSAuditTrail')
 from zope.component.interfaces import IFactory
 from zope.interface import implementer, implementedBy
+from gs.core import to_ascii
 from .interfaces import IAuditEvent
 
 
@@ -35,8 +36,8 @@ class BasicAuditEventFactory(object):
 @implementer(IAuditEvent)
 class BasicAuditEvent(object):
     def __init__(self, context, eventId, code='0', date=None, userInfo=None,
-                    instanceUserInfo=None, siteInfo=None, groupInfo=None,
-                    instanceDatum='', supplementaryDatum='', subsystem=''):
+                 instanceUserInfo=None, siteInfo=None, groupInfo=None,
+                 instanceDatum='', supplementaryDatum='', subsystem=''):
         if not context:
             raise ValueError('No context')
         self.context = context
@@ -60,7 +61,8 @@ class BasicAuditEvent(object):
         return retval
 
     def __str__(self):
-        retval = unicode(self).encode('ascii', 'ignore')
+        r = unicode(self)
+        retval = to_ascii(r)
         return retval
 
     def log(self):
@@ -71,5 +73,5 @@ class BasicAuditEvent(object):
         r = '<span class="audit-event-{0}">{1}: {2} '\
             '(<span class="date">{3}</span>)</span>'
         retval = r.format(self.code, self.subsystem, self.instanceDatum,
-                            self.date)
+                          self.date)
         return retval
