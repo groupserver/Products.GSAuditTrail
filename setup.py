@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-##############################################################################
+############################################################################
 #
 # Copyright © 2014 OnlineGroups.net and Contributors.
 # All Rights Reserved.
@@ -11,7 +11,7 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################
+############################################################################
 from __future__ import unicode_literals
 import codecs
 import os
@@ -23,22 +23,24 @@ version = get_version()
 
 with codecs.open('README.rst', encoding='utf-8') as f:
     long_description = f.read()
-with codecs.open(os.path.join("docs", "HISTORY.rst"), encoding='utf-8') as f:
+with codecs.open(os.path.join("docs", "HISTORY.rst"),
+                 encoding='utf-8') as f:
     long_description += '\n' + f.read()
 
 requires = [
-          'pytz',
-          'sqlalchemy',
-          'zope.component',
-          'zope.interface',
-          'zope.schema',
-          'zope.sqlalchemy',
-          'gs.core',
-          'gs.database', ]
+    'pytz',
+    'sqlalchemy',
+    'zope.component',
+    'zope.interface',
+    'zope.schema',
+    'zope.sqlalchemy',
+    'gs.core',
+    'gs.database', ]
 if (sys.version_info < (3, 4)):
     requires += ['setuptools']
 
-setup(name='Products.GSAuditTrail',
+setup(
+    name='Products.GSAuditTrail',
     version=version,
     description="",
     long_description=long_description,
