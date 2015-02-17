@@ -67,6 +67,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=requires,
+    test_suite="Products.GSAuditTrail.tests.test_all",
     entry_points="""
     # -*- Entry points: -*-
     """,

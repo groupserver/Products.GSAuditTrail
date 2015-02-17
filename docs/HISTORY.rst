@@ -8,6 +8,7 @@ Changelog
 * Added some documentation
 * Pointing all the metadata at GitHub_
 * Added some more Unicode robustness
+* Added some unit tests
 
 .. _GitHub: https://github.com/groupserver/Products.GSAuditTrail
 
